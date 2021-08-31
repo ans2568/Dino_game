@@ -1,0 +1,9 @@
+// Project description
+// 
+// Name : Dino game.py
+// Description : Dinosaur jump game with python, pygame.
+//
+// Author : ans2568 / ans2568 (ans2568@gmail.com)
+//
+// Image source : https://github.com/BlockDMask/Python_dinosaur_game
+
