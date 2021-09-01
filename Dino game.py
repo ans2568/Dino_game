@@ -2,20 +2,21 @@ import pygame
 import sys
 import os
 from time import sleep
- 
+
 pygame.init()
 pygame.display.set_caption('Jumping dino')
 
 MAX_WIDTH = 800
 MAX_HEIGHT = 400
 RED = (255, 0, 0)
-base = os.path.dirname(sys.argv[0]) # images path setting
+base = os.path.dirname(sys.argv[0])  # images path setting
+
 
 # Dinosaur
 class Dino(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.dinoImage = pygame.image.load(os.path.join(base, 'images/dino1.png'))
+        self.dinoImage = pygame.image.load(resource_path('dino1.png'))
         self.rect = self.dinoImage.get_rect()
         self.rect.centerx = 50
         self.rect.centery = 358
@@ -28,11 +29,12 @@ class Dino(pygame.sprite.Sprite):
         self.is_bottom = True
         self.is_go_up = False
 
+
 # Tree
 class Tree(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.imgTree = pygame.image.load(os.path.join(base, 'images/tree.png'))
+        self.imgTree = pygame.image.load(resource_path('tree.png'))
         self.rect = self.imgTree.get_rect()
         self.width = self.rect.size[0]
         self.height = self.rect.size[1]
@@ -41,28 +43,29 @@ class Tree(pygame.sprite.Sprite):
         self.rect.centerx = MAX_WIDTH
         self.rect.centery = MAX_HEIGHT - self.height
 
+
 def main():
     dino = Dino()
     tree = Tree()
     running = True
     finish = False
-    game_font = pygame.font.Font(None,40)
+    game_font = pygame.font.SysFont('arial', 40)
     start_ticks = pygame.time.get_ticks()
 
     # set screen, fps, font
     screen = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT))
     fps = pygame.time.Clock()
 
-    large_font = pygame.font.SysFont(None, 72)
+    large_font = pygame.font.SysFont('arial', 72)
 
     while not finish:
         while running:
             screen.fill((255, 255, 255))
-            
+
             # timer
             current_time = pygame.time.get_ticks()
-            elapsed_time = ( current_time - start_ticks )/1000
-            timer = game_font.render(str(int(elapsed_time)),True,RED)
+            elapsed_time = (current_time - start_ticks)/1000
+            timer = game_font.render(str(int(elapsed_time)), True, RED)
 
             # tree move
             tree.tree_x_left -= 12.0
@@ -76,17 +79,17 @@ def main():
             screen.blit(tree.imgTree, (tree.tree_x_left, tree.tree_y))
 
             # get event
-            event = pygame.event.poll() 
+            event = pygame.event.poll()
             if event.type == pygame.QUIT:
                 running = False
-                finish = True 
+                finish = True
                 pygame.quit()
                 sys.exit()
                 break
 
             # spacebar is jump
             pressed = pygame.key.get_pressed()
-            if pressed[pygame.K_SPACE]: 
+            if pressed[pygame.K_SPACE]:
                 if dino.is_bottom:
                     dino.is_go_up = True
                     dino.is_bottom = False
@@ -109,7 +112,7 @@ def main():
 
             # draw dino
             screen.blit(dino.dinoImage, (dino.x_position, dino.y_position))
-            screen.blit(timer,(10,10))
+            screen.blit(timer, (10, 10))
 
             # dino tree collision
             if pygame.sprite.collide_rect(dino, tree):
@@ -120,8 +123,9 @@ def main():
             pygame.display.update()
             fps.tick(30)
 
-        screen.blit(success_image, (MAX_WIDTH // 2 - success_image.get_width() // 2, MAX_HEIGHT // 2 - success_image.get_height() // 2))        
-        
+        screen.blit(success_image, (MAX_WIDTH // 2 - success_image.get_width() //
+                    2, MAX_HEIGHT // 2 - success_image.get_height() // 2))
+
         # update fps : 30
         pygame.display.update()
         fps.tick(30)
@@ -132,6 +136,18 @@ def main():
             pygame.quit()
             sys.exit()
             break
-    
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.join(base, 'images')
+
+    return os.path.join(base_path, relative_path)
+
+
 if __name__ == '__main__':
     main()
